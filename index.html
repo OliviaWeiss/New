@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Sports Betting Boilerplate</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .balance {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .match {
+      background: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      margin: 5px;
+      cursor: pointer;
+      background: #0077cc;
+      color: #fff;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Sports Betting Demo</h1>
+  <div class="balance">Balance: $<span id="balance">100</span></div>
+
+  <div class="match" data-team1="Lions" data-team2="Tigers" data-odds1="1.8" data-odds2="2.2">
+    <h3>Lions vs Tigers</h3>
+    <p>Lions (1.8) vs Tigers (2.2)</p>
+    <input type="number" placeholder="Bet Amount" min="1" id="bet1">
+    <button onclick="placeBet(this, 'team1')">Bet Lions</button>
+    <button onclick="placeBet(this, 'team2')">Bet Tigers</button>
+  </div>
+
+  <div class="match" data-team1="Sharks" data-team2="Eagles" data-odds1="2.0" data-odds2="1.9">
+    <h3>Sharks vs Eagles</h3>
+    <p>Sharks (2.0) vs Eagles (1.9)</p>
+    <input type="number" placeholder="Bet Amount" min="1" id="bet2">
+    <button onclick="placeBet(this, 'team1')">Bet Sharks</button>
+    <button onclick="placeBet(this, 'team2')">Bet Eagles</button>
+  </div>
+
+  <script>
+    let balance = 100;
+
+    function placeBet(button, team) {
+      const match = button.closest('.match');
+      const betInput = match.querySelector('input');
+      const amount = parseFloat(betInput.value);
+
+      if (isNaN(amount) || amount <= 0) {
+        alert("Enter a valid bet amount.");
+        return;
+      }
+      if (amount > balance) {
+        alert("Not enough balance.");
+        return;
+      }
+
+      balance -= amount;
+      document.getElementById('balance').textContent = balance.toFixed(2);
+
+      // simulate result
+      const winner = Math.random() < 0.5 ? "team1" : "team2";
+      const odds = parseFloat(match.dataset[team === "team1" ? "odds1" : "odds2"]);
+      const teamName = match.dataset[team];
+
+      if (team === winner) {
+        const winnings = amount * odds;
+        balance += winnings;
+        alert(`Congrats! ${teamName} won. You earned $${winnings.toFixed(2)}.`);
+      } else {
+        alert(`Sorry, ${teamName} lost. You lost $${amount.toFixed(2)}.`);
+      }
+
+      document.getElementById('balance').textContent = balance.toFixed(2);
+      betInput.value = "";
+    }
+  </script>
+
+</body>
+</html>
